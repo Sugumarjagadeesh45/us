@@ -2151,7 +2151,41 @@ app.get('/api/debug/drivers-by-vehicle', async (req, res) => {
 
 
 
-
+// Add this endpoint
+app.post('/api/rides/complete', async (req, res) => {
+  try {
+    const { rideId, driverId, distance, fare } = req.body;
+    
+    const ride = await Ride.findOne({ RAID_ID: rideId });
+    if (!ride) {
+      return res.status(404).json({ success: false, message: 'Ride not found' });
+    }
+    
+    ride.status = 'completed';
+    ride.completedAt = new Date();
+    ride.actualDistance = distance;
+    ride.actualFare = fare;
+    await ride.save();
+    
+    const io = req.app.get('io');
+    const userId = ride.user?.toString();
+    
+    if (userId && io) {
+      io.to(userId).emit('rideCompleted', {
+        rideId,
+        distance: `${distance} km`,
+        charge: fare,
+        driverName: ride.driverName || 'Driver',
+        vehicleType: ride.rideType || 'bike'
+      });
+    }
+    
+    res.json({ success: true, message: 'Ride completed successfully' });
+  } catch (error) {
+    console.error('Error completing ride:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 // ✅ UPDATE RIDE BOOKING ENDPOINT WITH STRICT VEHICLE TYPE FILTER
 app.post('/api/rides/book-ride-strict', async (req, res) => {
