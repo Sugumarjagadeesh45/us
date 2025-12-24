@@ -378,7 +378,8 @@ exports.acceptRide = async (req, res) => {
     if (!ride) return res.status(404).json({ error: 'Ride not found' });
     if (ride.status !== 'pending') return res.status(400).json({ error: 'Ride already taken' });
 
-    const otp = ride.otp;
+    // Make sure customerId is being passed from frontend
+const otp = rideData.customerId.slice(-4); // This should be LAST 4 digits
 
     ride.driver = driverId;
     ride.status = 'accepted';

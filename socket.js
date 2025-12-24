@@ -970,7 +970,9 @@ console.log(`🔒 Ride ${rideId} added to processing set`);
             vehicleType: normalizedVehicleType,
             userName: userName,
             userMobile: userMobile,
-            user: userId
+            user: userId,
+            otp: otp
+            
           });
           console.log('📊 REAL-TIME NOTIFICATION RESULT:', notificationResult);
         } catch (fcmError) {
