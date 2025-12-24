@@ -2977,6 +2977,10 @@ function safeRequireRoute(relPath, name = "Route") {
         if (module && module.default) return module.default;
       } catch (err) {
         console.error(`Failed to load ${name} route:`, err.message);
+
+        return express.Router();
+
+        
       }
       break;
     }

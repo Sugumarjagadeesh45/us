@@ -8,12 +8,7 @@ const multer = require('multer');
 const path = require('path');
 
 
-const walletController = require('../controllers/driver/WalletController');
 
-
-
-router.put('/driver/:driverId/wallet', walletController.updateDriverWallet);
-router.get('/driver/:driverId/wallet', walletController.getDriverWallet);
 
 
 // ================================
@@ -48,7 +43,14 @@ router.get('/test', (req, res) => {
 // Register route
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, role = 'admin' } = req.body;
+const { email, username, password, role = 'admin' } = req.body;
+
+const finalUsername = username || email;
+
+if (!finalUsername || !password) {
+  return res.status(400).json({ error: 'Username/email and password are required' });
+}
+
     
     console.log('📝 Register attempt:', { username, role });
     
@@ -116,7 +118,13 @@ router.post('/login', async (req, res) => {
     
     console.log('🔐 Login attempt:', { email, password });
     
-    const admin = await AdminUser.findOne({ username: email });
+ const admin = await AdminUser.findOne({
+  $or: [
+    { username: email },
+    { email: email }
+  ]
+});
+
     console.log('👤 Found admin:', admin ? 'Yes' : 'No');
     
     if (!admin) {

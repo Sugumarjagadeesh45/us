@@ -3,6 +3,13 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const Registration = require('../models/user/Registration');
 const Counter = require('../models/user/customerId');
+
+
+const adminController = require('../controllers/adminController');
+const AdminUser = require('../models/adminUser');
+
+
+
 const Driver = require('../models/driver/driver'); // ADD THIS LINE
 
 const generateToken = (userId) => {
