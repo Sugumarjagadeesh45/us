@@ -3525,6 +3525,8 @@ const init = (ioInstance) => {
       }
     });
    
+
+    
     if (cleanedCount > 0) {
       console.log(`\n🧹 Cleaned up ${cleanedCount} stale entries`);
       broadcastDriverLocationsToAllUsers();
